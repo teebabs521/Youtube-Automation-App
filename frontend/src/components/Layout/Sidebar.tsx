@@ -15,14 +15,14 @@ export const Sidebar: React.FC = () => {
             <Link to="/">📊 Dashboard</Link>
           </li>
           <li>
-            <Link to="/videos">🎬 Videos</Link>
+            <Link to="/settings">⚙️ Settings & Channel</Link>
           </li>
           <li>
             <Link to="/schedules">⏰ Schedules</Link>
           </li>
           {user?.role === 'admin' && (
             <li>
-              <Link to="/admin">⚙️ Admin</Link>
+              <Link to="/admin">🔧 Admin</Link>
             </li>
           )}
         </ul>

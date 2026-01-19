@@ -8,9 +8,12 @@ import { errorHandler } from './middleware/errorHandler';
 import { startVideoFetcherJob } from './jobs/videoFetcherJob';
 import { startVideoPublisherJob } from './jobs/videoPublisherJob';
 import authRoutes from './routes/auth';
+import youtubeAuthRoutes from './routes/youtube-auth';
 import channelsRoutes from './routes/channels';
+import destinationChannelsRoutes from './routes/destination-channels';
 import videosRoutes from './routes/videos';
 import schedulesRoutes from './routes/schedules';
+import settingsRoutes from './routes/settings';
 import adminRoutes from './routes/admin';
 
 dotenv.config();
@@ -27,9 +30,12 @@ app.use(generalLimiter);
 
 // Routes
 app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/youtube', youtubeAuthRoutes);
 app.use('/api/channels', channelsRoutes);
+app.use('/api/destination-channels', destinationChannelsRoutes);
 app.use('/api/videos', videosRoutes);
 app.use('/api/schedules', schedulesRoutes);
+app.use('/api/settings', settingsRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Health check

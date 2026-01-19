@@ -9,15 +9,23 @@ const router = Router();
 const youtubeService = new YouTubeService();
 
 router.get('/', authMiddleware, asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ error: 'User not authenticated' });
+  }
+  
   const pool = await getPool();
   const [channels]: any = await pool.execute(
     'SELECT * FROM source_channels WHERE user_id = ?',
-    [req.user.id]
+    [req.user?.id]
   );
-  res.json(channels);
+  res.json(channels || []);
 }));
 
 router.post('/', authMiddleware, asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ error: 'User not authenticated' });
+  }
+
   const { channel_id, channel_name } = req.body;
 
   if (!validateYouTubeChannelId(channel_id)) {
@@ -30,7 +38,7 @@ router.post('/', authMiddleware, asyncHandler(async (req: Request, res: Response
     [req.user.id, channel_id]
   );
 
-  if (existing.length > 0) {
+  if (existing && existing.length > 0) {
     return res.status(400).json({ error: 'Channel already added' });
   }
 
@@ -39,23 +47,31 @@ router.post('/', authMiddleware, asyncHandler(async (req: Request, res: Response
     [req.user.id, channel_id, channel_name]
   );
 
-  res.status(201).json({ id: result.insertId, channel_id, channel_name });
+  res.status(201).json({ id: result[0].insertId, channel_id, channel_name });
 }));
 
 router.delete('/:id', authMiddleware, asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ error: 'User not authenticated' });
+  }
+
   const pool = await getPool();
   await pool.execute('DELETE FROM source_channels WHERE id = ? AND user_id = ?', [req.params.id, req.user.id]);
   res.json({ message: 'Channel deleted' });
 }));
 
 router.post('/:id/refresh', authMiddleware, asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ error: 'User not authenticated' });
+  }
+
   const pool = await getPool();
   const [channels]: any = await pool.execute(
     'SELECT * FROM source_channels WHERE id = ? AND user_id = ?',
     [req.params.id, req.user.id]
   );
 
-  if (channels.length === 0) {
+  if (!channels || channels.length === 0) {
     return res.status(404).json({ error: 'Channel not found' });
   }
 

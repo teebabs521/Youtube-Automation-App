@@ -40,20 +40,22 @@
 }
 
 .sidebar {
-  position: fixed;
-  left: 0;
-  top: 60px;
+  position: relative;
   width: 260px;
-  height: calc(100vh - 60px);
   background-color: var(--surface);
   border-right: 1px solid var(--border);
   padding: 20px 0;
   overflow-y: auto;
   transition: transform 0.3s;
+  flex-shrink: 0;
 }
 
 .sidebar.closed {
-  transform: translateX(-100%);
+  width: 0;
+  transform: translateX(0);
+  border-right: none;
+  padding: 0;
+  overflow: hidden;
 }
 
 .sidebar nav ul {

@@ -10,6 +10,8 @@ export const Header: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
 
   const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('authUser');
     dispatch(logout());
     window.location.href = '/login';
   };
